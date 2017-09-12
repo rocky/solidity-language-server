@@ -1,13 +1,146 @@
 {
   "name": "solidity-language-server",
-  "version": "0.1.0",
   "description": "A language server for Solidity language",
-  "main": "index.js",
-  "repository": "git@github.com:kodebox-io/solidity-language-server.git",
+  "displayName": "Solidity Language Support",
+  "version": "0.1.6",
+  "license": "Apache-2.0",
+  "publisher": "kodebox",
+  "engines": {
+    "vscode": "^1.16.0"
+  },
+  "keywords": [
+    "solidity",
+    "ethereum",
+    "blockchain",
+    "compiler"
+  ],
+  "categories": [
+    "Languages",
+    "Snippets",
+    "Linters"
+  ],
+  "activationEvents": [
+    "onLanguage:solidity"
+  ],
+  "main": "./out/src/extension",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Solidity configuration",
+      "properties": {
+        "solidity.compilerOptions.remappings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "title": "Compiler remappings",
+            "properties": {
+              "prefix": {
+                "type": "string",
+                "description": "The prefix to remap"
+              },
+              "path": {
+                "type": "string",
+                "description": "The path to remap the prefix to"
+              }
+            }
+          },
+          "default": [],
+          "description": "Compiler remappings"
+        },
+        "solidity.compilerOptions.optimizer.enabled": {
+          "type": [
+            "boolean"
+          ],
+          "default": false,
+          "description": "Enables optimizer"
+        },
+        "solidity.solium.enabled": {
+          "type": [
+            "boolean"
+          ],
+          "default": true,
+          "description": "Enables solium linting"
+        },
+        "solidity.solium.rules": {
+          "type": [
+            "object"
+          ],
+          "default": {
+            "array-declarations": true,
+            "blank-lines": false,
+            "camelcase": true,
+            "deprecated-suicide": true,
+            "double-quotes": true,
+            "imports-on-top": true,
+            "indentation": false,
+            "lbrace": true,
+            "mixedcase": true,
+            "no-empty-blocks": true,
+            "no-unused-vars": true,
+            "no-with": true,
+            "operator-whitespace": true,
+            "pragma-on-top": true,
+            "uppercase": true,
+            "variable-declarations": true,
+            "whitespace": true
+          },
+          "description": "Solium linting rules"
+        },
+        "solidity.solhint.enabled": {
+          "type": [
+            "boolean"
+          ],
+          "default": true,
+          "description": "Enables solhint linting"
+        },
+        "solidity.solhint.rules": {
+          "type": [
+            "object"
+          ],
+          "default": {},
+          "description": "Solhint linting rules"
+        }
+      }
+    },
+    "languages": [
+      {
+        "id": "solidity",
+        "aliases": [
+          "Solidity",
+          "solidity"
+        ],
+        "extensions": [
+          ".sol"
+        ],
+        "configuration": "./solidity.configuration.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "solidity",
+        "path": "./snippets/solidity.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "solidity",
+        "scopeName": "source.solidity",
+        "path": "./syntaxes/solidity.json"
+      }
+    ]
+  },
+  "icon": "images/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CodeChain-io/solidity-language-server"
+  },
   "author": "Kwang Yul Seo <kseo@kodebox.io>",
-  "license": "MIT",
   "scripts": {
-    "test": "jest --env node"
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "jest": {
     "transform": {
@@ -23,13 +156,23 @@
     ]
   },
   "devDependencies": {
+    "@types/chalk": "^0.4.31",
+    "@types/glob": "^5.0.32",
     "@types/jest": "^20.0.8",
+    "@types/lodash": "^4.14.74",
+    "@types/mz": "^0.0.32",
     "@types/node": "^8.0.28",
+    "@types/rimraf": "^2.0.2",
+    "@types/sinon": "^2.3.5",
+    "@types/temp": "^0.8.29",
     "import-sort-cli": "^3.3.0",
     "import-sort-parser-babylon": "^3.2.0",
     "import-sort-parser-typescript": "^3.2.0",
     "import-sort-style-module": "^3.0.0",
     "jest": "^21.0.2",
+    "rimraf": "^2.6.2",
+    "sinon": "^4.0.0",
+    "temp": "^0.8.3",
     "ts-jest": "^21.0.0",
     "tslint": "^5.7.0",
     "typescript": "^2.5.2"
@@ -45,6 +188,24 @@
     }
   },
   "dependencies": {
-    "commander": "^2.11.0"
+    "@reactivex/rxjs": "^5.4.3",
+    "chalk": "^2.1.0",
+    "commander": "^2.11.0",
+    "fast-json-patch": "^2.0.5",
+    "glob": "^7.1.2",
+    "iterare": "^0.0.8",
+    "language-solidity": "^0.4.18-alpha",
+    "lodash": "^4.17.4",
+    "mz": "^2.7.0",
+    "nodemon": "^1.12.1",
+    "semaphore-async-await": "^1.5.1",
+    "solc": "^0.4.16",
+    "solhint": "^1.1.8",
+    "solium": "^1.0.3",
+    "solparse": "^1.2.7",
+    "vscode": "^1.1.5",
+    "vscode-languageclient": "^3.4.3",
+    "vscode-languageserver": "^3.4.2",
+    "vscode-languageserver-types": "^3.4.0"
   }
 }

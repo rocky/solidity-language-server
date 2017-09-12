@@ -1,4 +1,5 @@
 node_modules/
-build/
+out/
 yarn-error.log
 test.log
+.vscode-test/
