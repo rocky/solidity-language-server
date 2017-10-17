@@ -14,7 +14,6 @@ import {
 } from "vscode-languageserver";
 
 import { getDirectoryPath } from "../compiler/core";
-import { soliumDefaultRules } from "../compiler/program";
 import { CompilerOptions } from "../compiler/types";
 import { getDefaultCompilerOptions } from "../services/services";
 import { FileSystemUpdater, LocalFileSystem, RemoteFileSystem } from "./fs";
@@ -36,9 +35,39 @@ export interface Settings {
 }
 
 interface SoliditySettings {
-    soliumRules: any;
+    solium: {
+        enabled: boolean;
+        rules: any;
+    };
+    solhint: {
+        enabled: boolean;
+        rules: any;
+    };
     compilerOptions: CompilerOptions;
 }
+
+const defaultSoliumRules = {
+    "array-declarations": true,
+    "blank-lines": false,
+    "camelcase": true,
+    "deprecated-suicide": true,
+    "double-quotes": true,
+    "imports-on-top": true,
+    "indentation": false,
+    "lbrace": true,
+    "mixedcase": true,
+    "no-empty-blocks": true,
+    "no-unused-vars": true,
+    "no-with": true,
+    "operator-whitespace": true,
+    "pragma-on-top": true,
+    "uppercase": true,
+    "variable-declarations": true,
+    "whitespace": true
+};
+
+const defaultSolhintRules = {
+};
 
 /**
  * Handles incoming requests and return responses. There is a one-to-one-to-one
@@ -76,7 +105,14 @@ export class SolidityService {
      */
     protected settings: Settings = {
         solidity: {
-            soliumRules: soliumDefaultRules,
+            solium: {
+                enabled: true,
+                rules: defaultSoliumRules
+            },
+            solhint: {
+                enabled: true,
+                rules: defaultSolhintRules
+            },
             compilerOptions: getDefaultCompilerOptions()
         }
     };
@@ -276,7 +312,16 @@ export class SolidityService {
             return;
         }
         const fileName = uri2path(uri);
-        const diagnostics = config.getService().getCompilerDiagnostics(fileName).concat(config.getService().getLinterDiagnostics(fileName, this.settings.solidity.soliumRules));
+        const diagnostics = config.getService().getCompilerDiagnostics(fileName);
+        if (this.settings.solidity.solium.enabled) {
+            const soliumDiagnostics = config.getService().getSoliumDiagnostics(fileName, this.settings.solidity.solium.rules);
+            diagnostics.push(...soliumDiagnostics);
+        }
+        if (this.settings.solidity.solhint.enabled) {
+            const solhintDiagnostics = config.getService().getSolhintDiagnostics(fileName, this.settings.solidity.solhint.rules);
+            diagnostics.push(...solhintDiagnostics);
+        }
+
         this.client.textDocumentPublishDiagnostics({ uri, diagnostics });
     }
 

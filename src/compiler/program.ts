@@ -3,15 +3,16 @@ import { Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
 import * as core from "./core";
 import { arrayFrom, flatMap, getDirectoryPath, getRootLength, memoize, returnFalse, sortAndDeduplicateDiagnostics } from "./core";
 import { Debug, createMap, forEach, getNormalizedAbsolutePath, normalizePath } from "./core";
-import { SolcError, solcErrToDiagnostic, soliumErrObjectToDiagnostic } from "./diagnostics";
+import { SolcError, solcErrToDiagnostic, solhintErrObjectToDiagnostic, soliumErrObjectToDiagnostic } from "./diagnostics";
 import { createModuleResolutionCache, resolveModuleName } from "./moduleNameResolver";
 import { sys } from "./sys";
-import { CompilerHost, CompilerOptions, HasInvalidatedResolution, PackageId, Path, Program, SourceFile } from "./types";
+import { CancellationToken, CompilerHost, CompilerOptions, HasInvalidatedResolution, PackageId, Path, Program, SourceFile } from "./types";
 import { compareDataObjects, emptyArray, setResolvedModule } from "./utilities";
 
 const solparse = require("solparse");
 const solc = require("solc");
 const Solium = require("solium");
+const Solhint = require("solhint/lib");
 
 /**
  * Create a new 'Program' instance. A Program is an immutable collection of 'SourceFile's and a 'CompilerOptions'
@@ -69,7 +70,8 @@ export function createProgram(rootNames: ReadonlyArray<string>, options: Compile
         getSourceFiles: () => files,
         getMissingFilePaths: () => missingFilePaths,
         getCompilerDiagnostics,
-        getLinterDiagnostics,
+        getSoliumDiagnostics,
+        getSolhintDiagnostics,
         getCompilerOptions: () => options,
         getCurrentDirectory: () => currentDirectory,
         getFileProcessingDiagnostics: () => fileProcessingDiagnostics,
@@ -255,21 +257,28 @@ export function createProgram(rootNames: ReadonlyArray<string>, options: Compile
 
     function getDiagnosticsHelper(
         sourceFile: SourceFile,
-        getDiagnostics: (sourceFile: SourceFile) => ReadonlyArray<Diagnostic>, ...rest: any[]): ReadonlyArray<Diagnostic> {
+        getDiagnostics: (sourceFile: SourceFile, cancellationToken: CancellationToken, ...rest: any[]) => ReadonlyArray<Diagnostic>, cancellationToken: CancellationToken, ...rest: any[]): ReadonlyArray<Diagnostic> {
         if (sourceFile) {
-            return getDiagnostics(sourceFile, ...rest);
+            return getDiagnostics(sourceFile, cancellationToken, ...rest);
         }
         return sortAndDeduplicateDiagnostics(flatMap(program.getSourceFiles(), sourceFile => {
-            return getDiagnostics(sourceFile, ...rest);
+            if (cancellationToken) {
+                cancellationToken.throwIfCancellationRequested();
+            }
+            return getDiagnostics(sourceFile, cancellationToken, ...rest);
         }));
     }
 
-    function getCompilerDiagnostics(sourceFile: SourceFile): ReadonlyArray<Diagnostic> {
-        return getDiagnosticsHelper(sourceFile, getCompilerDiagnosticsForFile);
+    function getCompilerDiagnostics(sourceFile: SourceFile, cancellationToken: CancellationToken): ReadonlyArray<Diagnostic> {
+        return getDiagnosticsHelper(sourceFile, getCompilerDiagnosticsForFile, cancellationToken);
     }
 
-    function getLinterDiagnostics(sourceFile: SourceFile, soliumRules: any): ReadonlyArray<Diagnostic> {
-        return getDiagnosticsHelper(sourceFile, getLinterDiagnosticsForFile, soliumRules);
+    function getSoliumDiagnostics(sourceFile: SourceFile, cancellationToken: CancellationToken, soliumRules: any): ReadonlyArray<Diagnostic> {
+        return getDiagnosticsHelper(sourceFile, getSoliumDiagnosticsForFile, cancellationToken, soliumRules);
+    }
+
+    function getSolhintDiagnostics(sourceFile: SourceFile, cancellationToken: CancellationToken, solhintRules: any): ReadonlyArray<Diagnostic> {
+        return getDiagnosticsHelper(sourceFile, getSolhintDiagnosticsForFile, cancellationToken, solhintRules);
     }
 
     function getCompilerDiagnosticsForFile(sourceFile: SourceFile): ReadonlyArray<Diagnostic> {
@@ -319,9 +328,9 @@ export function createProgram(rootNames: ReadonlyArray<string>, options: Compile
         }
     }
 
-    function getLinterDiagnosticsForFile(sourceFile: SourceFile): ReadonlyArray<Diagnostic> {
+    function getSoliumDiagnosticsForFile(sourceFile: SourceFile, soliumRules: any): ReadonlyArray<Diagnostic> {
         try {
-            const errorObjects = Solium.lint(sourceFile.text, { rules: soliumDefaultRules });
+            const errorObjects = Solium.lint(sourceFile.text, { rules: soliumRules });
             return errorObjects.map(soliumErrObjectToDiagnostic);
         } catch (err) {
             const match = /An error .*?\nSyntaxError: (.*?) Line: (\d+), Column: (\d+)/.exec(err.message);
@@ -344,6 +353,11 @@ export function createProgram(rootNames: ReadonlyArray<string>, options: Compile
                 },
             ];
         }
+    }
+
+    function getSolhintDiagnosticsForFile(sourceFile: SourceFile, solhintRules: any): ReadonlyArray<Diagnostic> {
+        const errorObjects = Solhint.processStr(sourceFile.text, solhintRules).messages;
+        return errorObjects.map(solhintErrObjectToDiagnostic);
     }
 }
 
@@ -487,32 +501,3 @@ export function isProgramUptoDate(
             hasInvalidatedResolution(sourceFile.path);
     }
 }
-
-export function getDiagnostics(program: Program, sourceFile: SourceFile): Diagnostic[] {
-    const diagnostics = [
-        ...program.getCompilerDiagnostics(sourceFile),
-        ...program.getLinterDiagnostics(sourceFile)
-    ];
-
-    return diagnostics;
-}
-
-export const soliumDefaultRules = {
-    "array-declarations": true,
-    "blank-lines": false,
-    "camelcase": true,
-    "deprecated-suicide": true,
-    "double-quotes": true,
-    "imports-on-top": true,
-    "indentation": false,
-    "lbrace": true,
-    "mixedcase": true,
-    "no-empty-blocks": true,
-    "no-unused-vars": true,
-    "no-with": true,
-    "operator-whitespace": true,
-    "pragma-on-top": true,
-    "uppercase": true,
-    "variable-declarations": true,
-    "whitespace": true
-};

@@ -13,9 +13,14 @@ import { CompilerOptions, FileReference, HasInvalidatedResolution, Program } fro
 export interface LanguageService {
     getCompletionsAtPosition(fileName: string, position: Position): CompletionItem[];
     getCompilerDiagnostics(fileName: string): Diagnostic[];
-    getLinterDiagnostics(fileName: string, soliumRules?: any): Diagnostic[];
+    getSoliumDiagnostics(fileName: string, soliumRules?: any): Diagnostic[];
+    getSolhintDiagnostics(fileName: string, solhintRules: any): Diagnostic[];
 
     getProgram(): Program;
+}
+
+export interface HostCancellationToken {
+    isCancellationRequested(): boolean;
 }
 
 //
@@ -27,6 +32,7 @@ export interface LanguageServiceHost {
     getProjectVersion?(): string;
     getScriptFileNames(): string[];
     getScriptVersion(fileName: string): string;
+    getCancellationToken?(): HostCancellationToken;
     getCurrentDirectory(): string;
     log?(s: string): void;
     trace?(s: string): void;
