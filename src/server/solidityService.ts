@@ -39,6 +39,10 @@ interface SoliditySettings {
         enabled: boolean;
         rules: any;
     };
+    solhint: {
+        enabled: boolean;
+        rules: any;
+    };
     compilerOptions: CompilerOptions;
 }
 
@@ -60,6 +64,9 @@ const defaultSoliumRules = {
     "uppercase": true,
     "variable-declarations": true,
     "whitespace": true
+};
+
+const defaultSolhintRules = {
 };
 
 /**
@@ -101,6 +108,10 @@ export class SolidityService {
             solium: {
                 enabled: true,
                 rules: defaultSoliumRules
+            },
+            solhint: {
+                enabled: true,
+                rules: defaultSolhintRules
             },
             compilerOptions: getDefaultCompilerOptions()
         }
@@ -303,8 +314,12 @@ export class SolidityService {
         const fileName = uri2path(uri);
         const diagnostics = config.getService().getCompilerDiagnostics(fileName);
         if (this.settings.solidity.solium.enabled) {
-            const linterDiagnostics = config.getService().getLinterDiagnostics(fileName, this.settings.solidity.solium.rules);
-            diagnostics.push(...linterDiagnostics);
+            const soliumDiagnostics = config.getService().getSoliumDiagnostics(fileName, this.settings.solidity.solium.rules);
+            diagnostics.push(...soliumDiagnostics);
+        }
+        if (this.settings.solidity.solhint.enabled) {
+            const solhintDiagnostics = config.getService().getSolhintDiagnostics(fileName, this.settings.solidity.solhint.rules);
+            diagnostics.push(...solhintDiagnostics);
         }
 
         this.client.textDocumentPublishDiagnostics({ uri, diagnostics });

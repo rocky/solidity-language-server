@@ -12,187 +12,6 @@ export interface LineAndCharacter {
     character: number;
 }
 
-// token > SyntaxKind.Identifer => token is a keyword
-// Also, If you add a new SyntaxKind be sure to keep the `Markers` section at the bottom in sync
-export const enum SyntaxKind {
-    Unknown,
-    EndOfFileToken,
-    SingleLineCommentTrivia,
-    MultiLineCommentTrivia,
-    NewLineTrivia,
-    WhitespaceTrivia,
-    // We detect and preserve #! on the first line
-    ShebangTrivia,
-    // We detect and provide better error recovery when we encounter a git merge marker.  This
-    // allows us to edit files with git-conflict markers in them in a much more pleasant manner.
-    ConflictMarkerTrivia,
-    // Literals
-    NumericLiteral,
-    StringLiteral,
-    // Punctuation
-    OpenBraceToken,
-    CloseBraceToken,
-    OpenParenToken,
-    CloseParenToken,
-    OpenBracketToken,
-    CloseBracketToken,
-    DotToken,
-    DotDotDotToken,
-    SemicolonToken,
-    CommaToken,
-    LessThanToken,
-    LessThanSlashToken,
-    GreaterThanToken,
-    LessThanEqualsToken,
-    GreaterThanEqualsToken,
-    EqualsEqualsToken,
-    ExclamationEqualsToken,
-    EqualsGreaterThanToken,
-    PlusToken,
-    MinusToken,
-    AsteriskToken,
-    AsteriskAsteriskToken,
-    SlashToken,
-    PercentToken,
-    PlusPlusToken,
-    MinusMinusToken,
-    LessThanLessThanToken,
-    GreaterThanGreaterThanToken,
-    GreaterThanGreaterThanGreaterThanToken,
-    AmpersandToken,
-    BarToken,
-    CaretToken,
-    ExclamationToken,
-    TildeToken,
-    AmpersandAmpersandToken,
-    BarBarToken,
-    QuestionToken,
-    ColonToken,
-    AtToken,
-    // Assignments
-    EqualsToken,
-    PlusEqualsToken,
-    MinusEqualsToken,
-    AsteriskEqualsToken,
-    SlashEqualsToken,
-    PercentEqualsToken,
-    LessThanLessThanEqualsToken,
-    GreaterThanGreaterThanEqualsToken,
-    GreaterThanGreaterThanGreaterThanEqualsToken,
-    AmpersandEqualsToken,
-    BarEqualsToken,
-    CaretEqualsToken,
-    // Identifiers
-    Identifier,
-    // Keywords
-    AnonymousKeyword,
-    AsKeyword,
-    AssemblyKeyword,
-    BreakKeyword,
-    ConstantKeyword,
-    ContinueKeyword,
-    ContractKeyword,
-    DeleteKeyword,
-    DoKeyword,
-    ElseKeyword,
-    EnumKeyword,
-    EventKeyword,
-    ExternalKeyword,
-    FalseKeyword,
-    ForKeyword,
-    FunctionKeyword,
-    HexKeyword,
-    IfKeyword,
-    ImportKeyword,
-    IndexedKeyword,
-    InterfaceKeyword,
-    InternalKeyword,
-    IsKeyword,
-    LibraryKeyword,
-    MappingKeyword,
-    MemoryKeyword,
-    ModifierKeyword,
-    NewKeyword,
-    PayableKeyword,
-    PragmaKeyword,
-    PrivateKeyword,
-    PublicKeyword,
-    PureKeyword,
-    ReturnKeyword,
-    ReturnsKeyword,
-    StorageKeyword,
-    StructKeyword,
-    ThisKeyword,
-    ThrowKeyword,
-    TrueKeyword,
-    UsingKeyword,
-    VarKeyword,
-    WhileKeyword,
-    // Types
-    IntKeyword,
-    UintKeyword,
-    BytesKeyword,
-    ByteKeyword,
-    StringKeyword,
-    AddressKeyword,
-    BoolKeyword,
-    FixedKeyword,
-    UfixedKeyword,
-    // Denomination
-    EtherKeyword,
-    FinneyKeyword,
-    SzaboKeyword,
-    WeiKeyword,
-    // Time
-    DaysKeyword,
-    HoursKeyword,
-    MinutesKeyword,
-    SecondsKeyword,
-    WeeksKeyword,
-    YearsKeyword,
-    // Future reserverd word
-    AbstractKeyword,
-    AfterKeyword,
-    CaseKeyword,
-    CatchKeyword,
-    DefaultKeyword,
-    FinalKeyword,
-    InKeyword,
-    InlineKeyword,
-    LetKeyword,
-    MatchKeyword,
-    NullKeyword,
-    OfKeyword,
-    RelocatableKeyword,
-    StaticKeyword,
-    SwitchKeyword,
-    TryKeyword,
-    TypeKeyword,
-    TypeofKeyword, // LastKeyword and LastToken
-
-    // Markers
-    FirstAssignment = EqualsToken,
-    LastAssignment = CaretEqualsToken,
-    FirstCompoundAssignment = PlusEqualsToken,
-    LastCompoundAssignment = CaretEqualsToken,
-    FirstReservedWord = AnonymousKeyword,
-    LastReservedWord = TypeofKeyword,
-    FirstKeyword = AnonymousKeyword,
-    LastKeyword = TypeofKeyword,
-    FirstFutureReservedWord = AbstractKeyword,
-    LastFutureReservedWord = TypeofKeyword,
-    FirstPunctuation = OpenBraceToken,
-    LastPunctuation = CaretEqualsToken,
-    FirstToken = Unknown,
-    LastToken = LastKeyword,
-    FirstTriviaToken = SingleLineCommentTrivia,
-    LastTriviaToken = ConflictMarkerTrivia,
-    FirstLiteralToken = NumericLiteral,
-    LastLiteralToken = StringLiteral,
-    FirstBinaryOperator = LessThanToken,
-    LastBinaryOperator = CaretEqualsToken,
-}
-
 /* @internal */
 export const enum NumericLiteralFlags {
     None = 0,
@@ -296,8 +115,9 @@ export interface Program extends ScriptReferenceHost {
     /* @internal */
     getMissingFilePaths(): ReadonlyArray<Path>;
 
-    getCompilerDiagnostics(sourceFile?: SourceFile): ReadonlyArray<Diagnostic>;
-    getLinterDiagnostics(sourceFile?: SourceFile, soliumRules?: any): ReadonlyArray<Diagnostic>;
+    getCompilerDiagnostics(sourceFile?: SourceFile, cancellationToken?: CancellationToken): ReadonlyArray<Diagnostic>;
+    getSoliumDiagnostics(sourceFile?: SourceFile, cancellationToken?: CancellationToken, soliumRules?: any): ReadonlyArray<Diagnostic>;
+    getSolhintDiagnostics(sourceFile?: SourceFile, cancellationToken?: CancellationToken, solhintRules?: any): ReadonlyArray<Diagnostic>;
 
     /* @internal */ getFileProcessingDiagnostics(): Diagnostic[];
 
@@ -333,6 +153,7 @@ export interface ModuleResolutionHost {
 export interface CompilerHost extends ModuleResolutionHost {
     getSourceFile(fileName: string, onError?: (message: string) => void, shouldCreateNewSourceFile?: boolean): SourceFile | undefined;
     getSourceFileByPath?(fileName: string, path: Path, onError?: (message: string) => void, shouldCreateNewSourceFile?: boolean): SourceFile | undefined;
+    getCancellationToken?(): CancellationToken;
     getCanonicalFileName(fileName: string): string;
 
     useCaseSensitiveFileNames(): boolean;
@@ -533,4 +354,13 @@ export interface FileReference extends TextRange {
 export const enum LanguageVersion {
     Solidity_0_4,
     Solidity_0_5,
+}
+
+export class OperationCanceledException { }
+
+export interface CancellationToken {
+    isCancellationRequested(): boolean;
+
+    /** @throws OperationCanceledException if isCancellationRequested is true */
+    throwIfCancellationRequested(): void;
 }
