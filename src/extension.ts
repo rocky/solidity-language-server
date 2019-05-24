@@ -1,8 +1,14 @@
+"use strict";
 import * as path from "path";
+import { compileAllContracts } from "./compiler/compileAll";
+import { compileActiveContract, initDiagnosticCollection } from "./compiler/compileActive";
 
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from "vscode";
+
+import { commands, workspace, WorkspaceFolder,
+         DiagnosticCollection, ExtensionContext } from "vscode";
+
 import {
     LanguageClient,
     LanguageClientOptions,
@@ -14,11 +20,26 @@ let client: LanguageClient;
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: ExtensionContext) {
+
+
+    // tslint:disable-next-line:prefer-const
+    let diagnosticCollection: DiagnosticCollection;
+    context.subscriptions.push(diagnosticCollection);
+
+    initDiagnosticCollection(diagnosticCollection);
+
+    context.subscriptions.push(commands.registerCommand("solidity.compile.active", () => {
+        compileActiveContract();
+    }));
+
+    context.subscriptions.push(commands.registerCommand("solidity.compile", () => {
+        compileAllContracts(diagnosticCollection);
+    }));
 
     // The server is implemented in node
     const serverModule = context.asAbsolutePath(
-       path.join("out", "src", "server", "server.js")
+       path.join("out", "src", "server", "languageServerIpc.js")
     );
 
     // The debug options for the server
@@ -42,26 +63,37 @@ export function activate(context: vscode.ExtensionContext) {
         },
     };
 
+    // Options to control the language client
     const clientOptions: LanguageClientOptions = { // Register the server for solicity programs
-        documentSelector: ["solidity"],
+        documentSelector: [
+            { language: "solidity", scheme: "file" },
+            { language: "solidity", scheme: "untitled" },
+        ],
         synchronize: {
             // Synchronize the setting section 'solidity' to the server
             configurationSection: "solidity"
         }
     };
 
-    client = new LanguageClient(
-        "solidity",
-        "Solidity Language Server",
-        serverOptions,
-        clientOptions);
+    const ws: WorkspaceFolder[] | undefined = workspace.workspaceFolders;
+
+    if (ws) {
+        client = new LanguageClient(
+            "solidity",
+            "Solidity Language Server",
+            serverOptions,
+            clientOptions);
 
         // Start the client. This will also launch the server
         client.start();
+    }
 
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "solidity-language-server" is now active!');
+
+    // context.subscriptions.push(client);
+
 }
 
 // this method is called when your extension is deactivated

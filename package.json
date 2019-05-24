@@ -15,12 +15,14 @@
     "compiler"
   ],
   "categories": [
-    "Languages",
+    "Programming Languages",
     "Snippets",
     "Linters"
   ],
   "activationEvents": [
-    "onLanguage:solidity"
+    "onLanguage:solidity",
+    "onCommand:solidity.compile",
+    "onCommand:solidity.compile.active"
   ],
   "main": "./out/src/extension",
   "contributes": {
@@ -113,6 +115,16 @@
           ".sol"
         ],
         "configuration": "./solidity.configuration.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "solidity.compile",
+        "title": "Solidity: Compile All Solidity Contracts"
+      },
+      {
+        "command": "solidity.compile.active",
+        "title": "Solidity: Compile Current Solidity Contract"
       }
     ],
     "snippets": [
