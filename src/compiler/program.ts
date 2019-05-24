@@ -1,7 +1,7 @@
 import { Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
 
 import * as core from "./core";
-import { arrayFrom, flatMap, getDirectoryPath, getRootLength, memoize, returnFalse, sortAndDeduplicateDiagnostics } from "./core";
+import { arrayFrom, flatMap, memoize, returnFalse, sortAndDeduplicateDiagnostics } from "./core";
 import { Debug, createMap, forEach, getNormalizedAbsolutePath, normalizePath } from "./core";
 import { SolcError, solcErrToDiagnostic, solhintErrObjectToDiagnostic, soliumErrObjectToDiagnostic } from "./diagnostics";
 import { createModuleResolutionCache, resolveModuleName } from "./moduleNameResolver";
@@ -391,7 +391,6 @@ function loadWithLocalCache<T>(names: string[], containingFile: string, loader: 
 }
 
 export function createCompilerHost(_options: CompilerOptions): CompilerHost {
-    const existingDirectories = createMap<boolean>();
 
     function getCanonicalFileName(fileName: string): string {
         // if underlying system can distinguish between two files whose names differs only in cases then file name already in canonical form.
@@ -412,25 +411,6 @@ export function createCompilerHost(_options: CompilerOptions): CompilerHost {
         }
 
         return text !== undefined ? createSourceFile(fileName, text) : undefined;
-    }
-
-    function directoryExists(directoryPath: string): boolean {
-        if (existingDirectories.has(directoryPath)) {
-            return true;
-        }
-        if (sys.directoryExists(directoryPath)) {
-            existingDirectories.set(directoryPath, true);
-            return true;
-        }
-        return false;
-    }
-
-    function ensureDirectoriesExist(directoryPath: string) {
-        if (directoryPath.length > getRootLength(directoryPath) && !directoryExists(directoryPath)) {
-            const parentDirectory = getDirectoryPath(directoryPath);
-            ensureDirectoriesExist(parentDirectory);
-            sys.createDirectory(directoryPath);
-        }
     }
 
     const realpath = sys.realpath && ((path: string) => sys.realpath(path));
