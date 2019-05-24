@@ -10,48 +10,64 @@ import {
     TransportKind
 } from "vscode-languageclient";
 
+let client: LanguageClient;
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "solidity-language-server" is now active!');
+    // The server is implemented in node
+    const serverModule = context.asAbsolutePath(
+       path.join("out", "src", "server", "server.js")
+    );
 
-    const serverModule = path.join(__dirname, "server", "languageServerIpc.js");
+    // The debug options for the server
+    // --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
+    const debugOptions = { execArgv: ["-nolazy", "--inspect=6009"] };
 
+    // If the extension is launched in debug mode then the debug server options are used
+    // Otherwise the run options are used
     const serverOptions: ServerOptions = {
+        run: { module: serverModule, transport: TransportKind.ipc },
         debug: {
             module: serverModule,
-            options: {
-                execArgv: ["--nolazy", "--debug=6004"],
+            _transport: TransportKind.ipc,
+            get transport() {
+                return this._transport;
             },
-            transport: TransportKind.ipc,
-        },
-        run: {
-            module: serverModule,
-            transport: TransportKind.ipc,
+            set transport(value) {
+                this._transport = value;
+            },
+            options: debugOptions
         },
     };
 
-    const clientOptions: LanguageClientOptions = {
+    const clientOptions: LanguageClientOptions = { // Register the server for solicity programs
         documentSelector: ["solidity"],
         synchronize: {
-            configurationSection: "solidity" // Synchronize the setting section 'solidity' to the server
+            // Synchronize the setting section 'solidity' to the server
+            configurationSection: "solidity"
         }
     };
 
-    const clientDisposible = new LanguageClient(
+    client = new LanguageClient(
         "solidity",
         "Solidity Language Server",
         serverOptions,
-        clientOptions).start();
+        clientOptions);
 
-    // Push the disposable to the context's subscriptions so that the
-    // client can be deactivated on extension deactivation
-    context.subscriptions.push(clientDisposible);
+        // Start the client. This will also launch the server
+        client.start();
+
+    // Use the console to output diagnostic information (console.log) and errors (console.error)
+    // This line of code will only be executed once when your extension is activated
+    console.log('Congratulations, your extension "solidity-language-server" is now active!');
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {
+export function deactivate(): Thenable<void> | undefined {
+    if (!client) {
+        return undefined;
+    }
+    return client.stop();
 }
