@@ -22,6 +22,7 @@ export function solcErrToDiagnostic(error: SolcError): Diagnostic {
     const line = parseInt(errorSegments[1]);
     const column = parseInt(errorSegments[2]);
 
+    console.log("solc diagnostic Here"); debugger;
     return {
         message,
         range: {

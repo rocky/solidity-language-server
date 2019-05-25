@@ -90,6 +90,7 @@ export function activate(context: ExtensionContext) {
 
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
+    debugger;
     console.log('Congratulations, your extension "solidity-language-server" is now active!');
 
     // context.subscriptions.push(client);
