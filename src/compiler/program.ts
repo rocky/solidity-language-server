@@ -105,6 +105,7 @@ export function createProgram(rootNames: ReadonlyArray<string>, options: Compile
 
         const imports: string[] = [];
         try {
+            console.log("FIXME: use solc for ImportStatement");
             const result = solparse.parse(file.text);
             for (const element of result.body) {
                 if (element.type !== "ImportStatement") {
@@ -309,9 +310,9 @@ export function createProgram(rootNames: ReadonlyArray<string>, options: Compile
                     remappings: options.remappings,
                     outputSelection: {
                         "*": {
+                            "": ["legacyAST", "ast"],
                             "*": [
                                 "abi",
-                                "ast",
                                 "evm.bytecode.object",
                                 "evm.bytecode.sourceMap",
                                 "evm.deployedBytecode.object",
@@ -321,8 +322,9 @@ export function createProgram(rootNames: ReadonlyArray<string>, options: Compile
                     }
                 }
             };
-            const result = solc.compileStandard(JSON.stringify(solcStandardInput));
+            const result = solc.compile(JSON.stringify(solcStandardInput));
             const standardOutput = JSON.parse(result);
+            debugger; console.log("compile rocky");
             const errors = standardOutput.errors || [];
             return errors.map((error: SolcError) => solcErrToDiagnostic(error));
         }
