@@ -211,7 +211,7 @@
     "mz": "^2.7.0",
     "nodemon": "^1.12.1",
     "semaphore-async-await": "^1.5.1",
-    "solc": "^0.4.16",
+    "solc": "^0.5.8",
     "solhint": "^1.1.8",
     "solium": "^1.0.3",
     "solparse": "^1.2.7",
