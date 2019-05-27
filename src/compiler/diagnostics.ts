@@ -17,22 +17,22 @@ export interface SolcError {
 }
 
 export function solcErrToDiagnostic(error: SolcError): Diagnostic {
-    const { message, formattedMessage, severity } = error;
+    const { message, formattedMessage, severity, sourceLocation } = error;
     const errorSegments = formattedMessage.split(":");
-    const line = parseInt(errorSegments[1]);
-    const column = parseInt(errorSegments[2]);
+    const line = parseInt(errorSegments[1], 10) - 1;
+    const column = parseInt(errorSegments[2], 10) - 1;
+    const columnEnd = column + (sourceLocation.end - sourceLocation.start);
 
-    console.log("solc diagnostic Here"); debugger;
     return {
         message,
         range: {
             start: {
-                line: line - 1,
+                line: line,
                 character: column
             },
             end: {
-                line: line - 1,
-                character: column
+                line: line,
+                character: columnEnd
             },
         },
         severity: getDiagnosticSeverity(severity)
