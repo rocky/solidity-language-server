@@ -1,12 +1,19 @@
 "use strict";
 import * as path from "path";
+
+/** From Juan's code
 import { compileAllContracts } from "./compiler/compileAll";
 import { compileActiveContract, initDiagnosticCollection } from "./compiler/compileActive";
+**/
 
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 
-import { commands, workspace, WorkspaceFolder,
+/* From Juan's code
+import { commands } from "vscode";
+*/
+
+import { workspace, WorkspaceFolder,
          DiagnosticCollection, ExtensionContext } from "vscode";
 
 import {
@@ -27,6 +34,7 @@ export function activate(context: ExtensionContext) {
     let diagnosticCollection: DiagnosticCollection;
     context.subscriptions.push(diagnosticCollection);
 
+    /** From Juan's code;
     initDiagnosticCollection(diagnosticCollection);
 
     context.subscriptions.push(commands.registerCommand("solidity.compile.active", () => {
@@ -36,6 +44,7 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand("solidity.compile", () => {
         compileAllContracts(diagnosticCollection);
     }));
+    **/
 
     // The server is implemented in node
     const serverModule = context.asAbsolutePath(
