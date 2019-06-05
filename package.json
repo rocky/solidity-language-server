@@ -23,9 +23,26 @@
   "main": "./out/src/extension",
   "contributes": {
     "configuration": {
-      "type": "object",
-      "title": "Solidity configuration",
-      "properties": {
+	"type": "object",
+	"title": "Solidity configuration",
+	"properties": {
+	    "solidity.maxNumberOfProblems": {
+		"scope": "resource",
+		"type": "number",
+		"default": 10,
+		"description": "Controls the maximum number Solidity compiler errors/warnings the server will return."
+	    },
+	    "solidity.trace.server": {
+		"scope": "window",
+		"type": "string",
+		"enum": [
+		    "off",
+		    "messages",
+		    "verbose"
+		],
+		"default": "verbose",
+		"description": "Traces the communication between VS Code and the language server."
+	    },
         "solidity.compilerOptions.remappings": {
           "type": "array",
           "items": {
