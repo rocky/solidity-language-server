@@ -1,4 +1,6 @@
+*~
 .vscode-test/
+/package-lock.json
 /tmp
 node_modules/
 out/

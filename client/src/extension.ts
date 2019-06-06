@@ -1,17 +1,8 @@
 "use strict";
 import * as path from "path";
 
-/** From Juan's code
-import { compileAllContracts } from "./compiler/compileAll";
-import { compileActiveContract, initDiagnosticCollection } from "./compiler/compileActive";
-**/
-
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-
-/* From Juan's code
-import { commands } from "vscode";
-*/
 
 import { workspace, WorkspaceFolder,
          DiagnosticCollection, ExtensionContext } from "vscode";
@@ -34,18 +25,6 @@ export function activate(context: ExtensionContext) {
     let diagnosticCollection: DiagnosticCollection;
     context.subscriptions.push(diagnosticCollection);
 
-    /** From Juan's code;
-    initDiagnosticCollection(diagnosticCollection);
-
-    context.subscriptions.push(commands.registerCommand("solidity.compile.active", () => {
-        compileActiveContract();
-    }));
-
-    context.subscriptions.push(commands.registerCommand("solidity.compile", () => {
-        compileAllContracts(diagnosticCollection);
-    }));
-    **/
-
     // The server is implemented in node
     const serverModule = context.asAbsolutePath(
        path.join("out", "src", "server", "languageServerIpc.js")
@@ -61,19 +40,14 @@ export function activate(context: ExtensionContext) {
         run: { module: serverModule, transport: TransportKind.ipc },
         debug: {
             module: serverModule,
-            _transport: TransportKind.ipc,
-            get transport() {
-                return this._transport;
-            },
-            set transport(value) {
-                this._transport = value;
-            },
+            transport: TransportKind.ipc,
             options: debugOptions
-        },
+        }
     };
 
     // Options to control the language client
-    const clientOptions: LanguageClientOptions = { // Register the server for solicity programs
+    const clientOptions: LanguageClientOptions = {
+        // Register the server for solicity programs
         documentSelector: [
             { language: "solidity", scheme: "file" },
             { language: "solidity", scheme: "untitled" },

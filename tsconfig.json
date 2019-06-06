@@ -2,13 +2,13 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es6",
-        "outDir": "./out",
-        "lib": [
+        "outDir": "out",
+ 	"rootDir": "src",
+	"lib": [
             "es6",
             "dom"
         ],
         "sourceMap": true,
-        "rootDir": ".",
         "noImplicitAny": true,
         "newLine": "LF",
         "allowJs": true,
@@ -19,7 +19,14 @@
     // then only files with supported extensions are included
     // (e.g. .ts, .tsx, and .d.ts by default with .js and .jsx if allowJs is set to true).
     "include": [
-        "./src/**/*",
-        "./test/**/*"
+	"src"
+    ],
+    "exclude": [
+	"node_modules",
+	".vscode-test"
+    ],
+    "references": [
+	{ "path": "./client" },
+	{ "path": "./server" }
     ]
 }

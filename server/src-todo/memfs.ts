@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 
-import { FileSystemEntries, matchFiles } from "../compiler/core";
-import { ModuleResolutionHost } from "../compiler/types";
+import { FileSystemEntries, matchFiles } from "./compiler/core";
+import { ModuleResolutionHost } from "./compiler/types";
 import { Logger, NoopLogger } from "./logging";
 import { path2uri, uri2path } from "./utilities";
 
