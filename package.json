@@ -158,54 +158,8 @@
   },
   "devDependencies": {
     "@types/mocha": "^5.2.0",
-    "@types/node": "^8.0.28",
-    "@types/glob": "^5.0.32",
-    "@types/lodash": "^4.14.74",
-    "@types/mz": "^0.0.32",
-    "@types/rimraf": "^2.0.2",
-    "@types/sinon": "^2.3.5",
-    "@types/temp": "^0.8.29",
-    "import-sort-cli": "^3.3.0",
-    "import-sort-parser-babylon": "^3.2.0",
-    "import-sort-parser-typescript": "^3.2.0",
-    "import-sort-style-module": "^3.0.0",
-    "mocha": "^5.2.0",
-    "rimraf": "^2.6.2",
-    "sinon": "^7.2.3",
-    "temp": "^0.8.3",
-    "tslint": "^5.17.0",
-    "typescript": "^3.4.5"
-  },
-  "importSort": {
-    ".js, .jsx, .es6, .es": {
-      "parser": "babylon",
-      "style": "module"
-    },
-    ".ts, .tsx": {
-      "parser": "typescript",
-      "style": "module"
-    }
-  },
-  "dependencies": {
-    "commander": "^2.11.0",
-    "fast-json-patch": "^2.0.5",
-    "glob": "^7.1.2",
-    "iterare": "^0.0.8",
-    "language-solidity": "^0.4.18-alpha",
-    "lodash": "^4.17.4",
-    "mz": "^2.7.0",
-    "nodemon": "^1.12.1",
-    "rxjs": "^6.5.2",
-    "rxjs-compat": "^6.5.2",
-    "semaphore-async-await": "^1.5.1",
-    "solc": "^0.5.8",
-    "solhint": "^1.4.0",
-    "solium": "^1.0.3",
-    "solparse": "^1.2.8",
-    "tsc": "^1.20150623.0",
-    "vscode": "^1.1.5",
-    "vscode-languageclient": "^3.4.3",
-    "vscode-languageserver": "^3.4.2",
-    "vscode-languageserver-types": "^3.4.0"
+    "@types/node": "^8.0.0",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.3"
   }
 }
