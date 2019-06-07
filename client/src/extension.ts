@@ -27,7 +27,7 @@ export function activate(context: ExtensionContext) {
 
     // The server is implemented in node
     const serverModule = context.asAbsolutePath(
-       path.join("out", "src", "server", "languageServerIpc.js")
+        path.join("server", "out", "server.js")
     );
 
     // The debug options for the server
