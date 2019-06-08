@@ -1,6 +1,8 @@
 *~
 .vscode-test/
+/.DS_Store
 /package-lock.json
+/solidiity-languge-server-workspace.code-workspace
 /tmp
 node_modules/
 out/

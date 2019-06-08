@@ -22,7 +22,8 @@
     "vscode": "^1.23.0"
   },
   "activationEvents": [
-    "onLanguage:solidity"
+      "onLanguage:solidity",
+      "onCommand:solidity.compile"
   ],
   "main": "./client/out/extension",
   "contributes": {
@@ -132,6 +133,12 @@
           ".sol"
         ],
         "configuration": "./solidity.configuration.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "solidity.compile",
+        "title": "Solidity: Compile Contract"
       }
     ],
     "snippets": [

@@ -4,7 +4,7 @@ import * as path from "path";
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 
-import { workspace, WorkspaceFolder,
+import { commands, workspace, WorkspaceFolder,
          DiagnosticCollection, ExtensionContext } from "vscode";
 
 import {
@@ -13,6 +13,8 @@ import {
     ServerOptions,
     TransportKind
 } from "vscode-languageclient";
+
+import { compileActiveContract } from "./compiler/compileActive";
 
 let client: LanguageClient;
 
@@ -24,6 +26,11 @@ export function activate(context: ExtensionContext) {
     // tslint:disable-next-line:prefer-const
     let diagnosticCollection: DiagnosticCollection;
     context.subscriptions.push(diagnosticCollection);
+
+    debugger;
+    context.subscriptions.push(commands.registerCommand("solidity.compile", () => {
+        compileActiveContract(diagnosticCollection);
+    }));
 
     // The server is implemented in node
     const serverModule = context.asAbsolutePath(
@@ -37,7 +44,10 @@ export function activate(context: ExtensionContext) {
     // If the extension is launched in debug mode then the debug server options are used
     // Otherwise the run options are used
     const serverOptions: ServerOptions = {
-        run: { module: serverModule, transport: TransportKind.ipc },
+        run: {
+            module: serverModule,
+            transport: TransportKind.ipc
+        },
         debug: {
             module: serverModule,
             transport: TransportKind.ipc,
@@ -47,7 +57,7 @@ export function activate(context: ExtensionContext) {
 
     // Options to control the language client
     const clientOptions: LanguageClientOptions = {
-        // Register the server for solicity programs
+        // Register the server for solidity programs
         documentSelector: [
             { language: "solidity", scheme: "file" },
             { language: "solidity", scheme: "untitled" },
@@ -58,18 +68,14 @@ export function activate(context: ExtensionContext) {
         }
     };
 
-    const ws: WorkspaceFolder[] | undefined = workspace.workspaceFolders;
-
-    if (ws) {
-        client = new LanguageClient(
-            "solidity",
-            "Solidity Language Server",
-            serverOptions,
-            clientOptions);
+    client = new LanguageClient(
+        "solidity",
+        "Solidity Language Server",
+        serverOptions,
+        clientOptions);
 
         // Start the client. This will also launch the server
-        client.start();
-    }
+    client.start();
 
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated

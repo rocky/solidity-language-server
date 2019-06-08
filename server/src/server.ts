@@ -9,7 +9,8 @@ import {
     DidChangeConfigurationNotification,
     CompletionItem,
     CompletionItemKind,
-    TextDocumentPositionParams
+    TextDocumentPositionParams,
+    Connection
 } from "vscode-languageserver";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
@@ -43,6 +44,7 @@ const capabilities = params.capabilities;
         capabilities.textDocument.publishDiagnostics.relatedInformation
     );
 
+    debugger;
     return {
         capabilities: {
             textDocumentSync: documents.syncKind,
@@ -54,10 +56,18 @@ const capabilities = params.capabilities;
     };
 });
 
+function registerProviders(connection: Connection) {
+    // Register for all configuration changes.
+    const client = connection.client;
+    connection.console.log("Hi rocky");
+    client.register(DidChangeConfigurationNotification.type, undefined);
+}
+
 connection.onInitialized(() => {
+    connection.console.log("DEBUG: connection initalized");
     if (hasConfigurationCapability) {
         // Register for all configuration changes.
-        connection.client.register(DidChangeConfigurationNotification.type, undefined);
+        registerProviders(connection);
     }
     if (hasWorkspaceFolderCapability) {
         connection.workspace.onDidChangeWorkspaceFolders(_event => {
@@ -123,7 +133,6 @@ documents.onDidChangeContent(change => {
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
     // In this simple example we get the settings for every validate run.
     const settings = await getDocumentSettings(textDocument.uri);
-    debugger;
 
     // The validator creates diagnostics for all uppercase words length 2 and more
     const text = textDocument.getText();
