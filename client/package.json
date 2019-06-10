@@ -16,7 +16,7 @@
 		"postinstall": "vscode-install"
 	},
 	"dependencies": {
-		"solc-lsp": "file:../solc-lsp",
+		"solc-lsp": "file:../../solc-lsp",
 		"solc": "^0.5.9",
 		"vscode-languageclient": "^4.1.4"
 	},
