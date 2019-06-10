@@ -6,6 +6,7 @@ import * as path from "path";
 
 import { commands, workspace, WorkspaceFolder,
          DiagnosticCollection, ExtensionContext } from "vscode";
+import * as vscode from "vscode";
 
 import {
     LanguageClient,
@@ -23,13 +24,11 @@ let client: LanguageClient;
 export function activate(context: ExtensionContext) {
 
 
-    // tslint:disable-next-line:prefer-const
-    let diagnosticCollection: DiagnosticCollection;
-    context.subscriptions.push(diagnosticCollection);
+    const diagnosticsCollection = vscode.languages.createDiagnosticCollection("Solidity");
+    context.subscriptions.push(diagnosticsCollection);
 
-    debugger;
     context.subscriptions.push(commands.registerCommand("solidity.compile", () => {
-        compileActiveContract(diagnosticCollection);
+        compileActiveContract(diagnosticsCollection);
     }));
 
     // The server is implemented in node
@@ -87,7 +86,7 @@ export function activate(context: ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate(): Thenable<void> | undefined {
+export function deactivate() {
     if (!client) {
         return undefined;
     }
