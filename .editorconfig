@@ -8,11 +8,11 @@ charset = utf-8
 indent_style = space
 indent_size = 2
 
-[{src,test}/**.{ts,tsx,json,js,jsx}]
+[{{client,server,solc-lsp-lib}/{src,test}}/**.{ts,tsx,json,js,jsx}]
 trim_trailing_whitespace = true
 insert_final_newline = true
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 # npm inserts a final newline.
 [package.json]

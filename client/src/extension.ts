@@ -14,7 +14,7 @@ import {
     TransportKind
 } from "vscode-languageclient";
 
-import { compileActiveContract } from "./compiler/compileActive";
+import { compileActiveContract } from "./compileActive";
 
 let client: LanguageClient;
 
