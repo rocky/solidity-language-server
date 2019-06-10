@@ -1,5 +1,5 @@
 {
-	"name": "solidity-sample-client",
+	"name": "solidity-client",
 	"description": "A language server for Solidity language",
 	"author": "Rocky Bernstein",
 	"license": "MIT",
@@ -16,7 +16,7 @@
 		"postinstall": "vscode-install"
 	},
 	"dependencies": {
-		"soc-lsp-lib": "file:../solc-lsp-lib",
+		"solc-lsp": "file:../solc-lsp",
 		"solc": "^0.5.9",
 		"vscode-languageclient": "^4.1.4"
 	},

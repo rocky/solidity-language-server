@@ -1,8 +1,9 @@
 "use strict";
-import { window, workspace, DiagnosticCollection } from "vscode";
 import * as path from "path";
+import { window, workspace, DiagnosticCollection } from "vscode";
+// import { compile } from "solc-lsp/out";
 
-export function compileActiveContract(diagnosticCollection: DiagnosticCollection): Promise<Array<string>> {
+export function compileActiveContract(diagnosticCollection: DiagnosticCollection) {
     const editor = window.activeTextEditor;
 
     if (!editor) {
@@ -19,6 +20,15 @@ export function compileActiveContract(diagnosticCollection: DiagnosticCollection
         window.showWarningMessage("Please open a folder in Visual Studio Code as a workspace");
         return;
     }
+
+    // const compiled = compile(editor.document.getText(), {});
+    // if (!compiled.contracts) {
+    //   if (compiled.errors) {
+    //     for (const compiledError of compiled.errors) {
+    //       console.log(compiledError.formattedMessage);
+    //     }
+    //   }
+    // }
 
     console.log("compileActiveContract to be completed later...");
     return;
