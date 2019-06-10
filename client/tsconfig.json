@@ -1,12 +1,29 @@
+/* Typescript configuation
+   Apparently in contrast to real JSON, we can have comments here.
+*/
 {
-	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es6",
-		"outDir": "out",
-		"rootDir": "src",
-		"lib": ["es6"],
-		"sourceMap": true
+    "compilerOptions": {
+	/* Basic Options */
+	"module": "commonjs",
+	"target": "es6",
+	"outDir": "./out",
+	"rootDir": "src",
+	"moduleResolution": "node",
+        "lib": [
+            "es6",
+            "dom"
+        ],
+	/* Strict Type-Checking Options */
+	"strict": true,
+	"noImplicitAny": false,                   /* Raise error on expressions and declarations with an implied 'any' type. */
+        "newLine": "LF",
+	"sourceMap": true,
+	"allowJs": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+	/* Module Resolution Options */
+	"baseUrl": "./src",
 	},
-	"include": ["src"],
-	"exclude": ["node_modules", ".vscode-test"]
+    "include": ["src"],
+    "exclude": ["node_modules", ".vscode-test"]
 }
