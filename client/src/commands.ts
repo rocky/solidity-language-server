@@ -2,7 +2,7 @@ import * as path from "path";
 import { window, /*workspace,*/
          Diagnostic,
          DiagnosticCollection, Uri } from "vscode";
-import { compile } from "solc-lsp";
+import * as lsp from "solc-lsp";
 import { solcErrToDiagnostic } from "./diagnostics";
 
 export function compileActiveContract(diagnosticCollection: DiagnosticCollection) {
@@ -14,7 +14,7 @@ export function compileActiveContract(diagnosticCollection: DiagnosticCollection
 
   const fileName = editor.document.fileName;
   if (path.extname(fileName) !== ".sol") {
-    window.showWarningMessage(`{filename} not a solidity file (*.sol)`);
+    window.showWarningMessage(`${fileName} not a solidity file (*.sol)`);
     return;
   }
 
@@ -26,10 +26,10 @@ export function compileActiveContract(diagnosticCollection: DiagnosticCollection
   }
   */
 
-  const compiled = compile(editor.document.getText(), fileName, {});
+  const uri = Uri.file(fileName);
+  const compiled = lsp.compile(editor.document.getText(), fileName, {});
+  diagnosticCollection.delete(uri);
   if (compiled.errors) {
-    const uri = Uri.file(fileName);
-    diagnosticCollection.clear();
     const diagnostics: Array<Diagnostic> = [];
     for (const compiledError of compiled.errors) {
       const diagnostic = solcErrToDiagnostic(compiledError);
@@ -37,24 +37,23 @@ export function compileActiveContract(diagnosticCollection: DiagnosticCollection
       console.log(compiledError.formattedMessage);
     }
     diagnosticCollection.set(uri, diagnostics);
-  } else {
-    console.log("compileActiveContract suceeded");
   }
   return;
 
 }
 
 export function gotoDefinition() {
-    const editor = window.activeTextEditor;
-    if (!editor) {
-        return; // We need something open
-    }
+  const editor = window.activeTextEditor;
+  if (!editor) {
+    return; // We need something open
+  }
 
-    const fileName = editor.document.fileName;
-    if (path.extname(fileName) !== ".sol") {
-        window.showWarningMessage(`{filename} not a solidity file (*.sol)`);
-        return;
-    }
+  const fileName = editor.document.fileName;
+  if (path.extname(fileName) !== ".sol") {
+    window.showWarningMessage(`${fileName} not a solidity file (*.sol)`);
+    return;
+  }
 
-    console.log("gotoDefinition to be filled in");
+  lsp.gotoDefinition(fileName, editor.selection);
+  console.log("gotoDefinition to be filled in");
 }
