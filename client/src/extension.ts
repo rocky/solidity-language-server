@@ -14,7 +14,7 @@ import {
     TransportKind
 } from "vscode-languageclient";
 
-import { compileActiveContract } from "./compileActive";
+import { compileActiveContract, gotoDefinition } from "./commands";
 
 let client: LanguageClient;
 
@@ -26,8 +26,14 @@ export function activate(context: ExtensionContext) {
     const diagnosticsCollection = vscode.languages.createDiagnosticCollection("Solidity");
     context.subscriptions.push(diagnosticsCollection);
 
+    /* FIXME: these are done on the client side but may eventually be done on the LSP server side
+     */
     context.subscriptions.push(commands.registerCommand("solidity.compile", () => {
         compileActiveContract(diagnosticsCollection);
+    }));
+
+    context.subscriptions.push(commands.registerCommand("solidity.gotoDefinition", () => {
+        gotoDefinition();
     }));
 
     // The server is implemented in node
@@ -77,7 +83,6 @@ export function activate(context: ExtensionContext) {
 
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
-    debugger;
     console.log('Congratulations, your extension "solidity-language-server" is now active!');
 
     // context.subscriptions.push(client);

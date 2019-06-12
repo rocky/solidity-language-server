@@ -3,9 +3,12 @@ Solidity Language Server
 
 **Warning: This project is in the alpha stage of development. Use at your own risk.**
 
-This project is a prototype Solidity Language Server using Microsoft's
+This project aims to be a prototype Solidity Language Server using Microsoft's
 [Language Server Protocol (LSP)][lsp]. It includes a minimal client
 for demonstration.
+
+Right now thow most of the work is being done on the client side via a common library
+and will be moved to the server side later.
 
 # Running
 
