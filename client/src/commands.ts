@@ -2,8 +2,10 @@ import * as path from "path";
 import { window, /*workspace,*/
          Diagnostic,
          DiagnosticCollection, Uri } from "vscode";
-import * as lsp from "solc-lsp";
+import * as solcLsp from "solc-lsp";
 import { solcErrToDiagnostic } from "./diagnostics";
+
+const lspMgr = new solcLsp.LspManager();
 
 export function compileActiveContract(diagnosticCollection: DiagnosticCollection) {
 
@@ -27,7 +29,7 @@ export function compileActiveContract(diagnosticCollection: DiagnosticCollection
   */
 
   const uri = Uri.file(fileName);
-  const compiled = lsp.compile(editor.document.getText(), fileName, {});
+  const compiled = lspMgr.compile(editor.document.getText(), fileName, {});
   diagnosticCollection.delete(uri);
   if (compiled.errors) {
     const diagnostics: Array<Diagnostic> = [];
@@ -54,6 +56,6 @@ export function gotoDefinition() {
     return;
   }
 
-  lsp.gotoDefinition(fileName, editor.selection);
+  lspMgr.gotoDefinition(fileName, editor.selection);
   console.log("gotoDefinition to be filled in");
 }
