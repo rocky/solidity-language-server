@@ -19,7 +19,7 @@
     "compiler"
   ],
   "engines": {
-    "vscode": "^1.23.0"
+    "vscode": "^1.26.0"
   },
   "activationEvents": [
     "onLanguage:solidity",
@@ -90,6 +90,10 @@
       {
         "command": "solidity.gotoDefinition",
         "title": "Solidity: goto definition of selected region"
+      },
+      {
+        "command": "solidity.getTypeDefinition",
+        "title": "Solidity: get type definition of selected region"
       }
     ],
     "snippets": [
