@@ -1,14 +1,15 @@
 Solidity Language Server
 ========================
 
-**Warning: This project is in the alpha stage of development. Use at your own risk.**
+**This project is in the alpha stage of development.**
 
-This project aims to be a prototype Solidity Language Server using Microsoft's
+This project aims to be a prototype of Solidity Language Server using Microsoft's
 [Language Server Protocol (LSP)][lsp]. It includes a minimal client
 for demonstration.
 
-Right now thow most of the work is being done on the client side via a common library
-and will be moved to the server side later.
+Initialy the work is being done on the client side using a common npm library which will be moved to the server side later.
+
+If you are looking for something for ready day-to-day use, I recommend mention the [solidity plugin](https://marketplace.visualstudio.com/items?itemName=JuanBlanco.solidity) written by Juan Blanco.
 
 # Running
 
@@ -27,12 +28,17 @@ code .
 
 VSCode will open into the solidity-language-server project. From here, click the Debug button on the left-hand side (a bug with a line through it). Next, click the green triangle at the top. This will launch a new instance of VSCode with the solidity-language-server plugin enabled.
 
-# Contributing
-Always feel free to help out! Whether it's filing bugs and feature requests or working on some of the open issues, we welcome your contributions.
+# Acknowledgements
 
-In general, all contributions will be done using [GitHub’s pull request model][pr]. That is, you’ll fork our project, perform the work in a topic branch and then submit a pull request against our master branch.
+There have been several complete rewrites of this code. The project name comes from the now defunct [kodebox project](https://marketplace.visualstudio.com/items?itemName=kodebox.solidity-language-server). However very little of that code is in current use. Instead, I went back to the Microsoft tutorial on this and picked up the simple code LSP Example from https://github.com/microsoft/vscode-extension-samples/tree/master/lsp-sample.  But right now, since everything is client-side, there isn't much code from that there either. I just have the client-server architecture which I can plug into at a later time.
+
+Finally, at times I've been guided by Juan Blanco's plugin mentioned above.
+
+
+
+# Contributing
+Always feel free to help out!
 
 [lsp]: https://github.com/Microsoft/language-server-protocol
 [solc]: https://github.com/ethereum/solc-js
 [vscode]: https://code.visualstudio.com/download
-[pr]: https://help.github.com/articles/about-pull-requests/
