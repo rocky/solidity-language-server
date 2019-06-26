@@ -118,6 +118,9 @@
     "postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
     "test": "tsc -p ./ && mocha out/test"
   },
+  "dependencies": {
+    "solc-lsp": "file:../solc-lsp"
+  },
   "devDependencies": {
     "@types/mocha": "^5.2.0",
     "@types/node": "^8.0.0",
