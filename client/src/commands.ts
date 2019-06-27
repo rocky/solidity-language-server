@@ -9,10 +9,11 @@ import {
   Uri
 } from "vscode";
 
-const lspManager = require("../node_modules/solc-lsp/out/lspManager");
+import { LspManager } from "solc-lsp";
 import { solcErrToDiagnostic } from "./diagnostics";
 
-const lspMgr = new lspManager.LspManager();
+const lspConfig = {};
+const lspMgr = new LspManager(lspConfig);
 
 function selectionToRange(selection: Selection): Range {
   // FIXME put into a function
@@ -79,7 +80,7 @@ export function gotoDefinition() {
   const defNode = lspMgr.gotoDefinition(fileName, range);
   if (defNode) {
     const defPosition = defNode.src;
-    const defRange = sm.srcToLineColumnRange(defPosition);
+    const defRange = sm.lineColumnRangeFromSrc(defPosition);
 
     // Debug information.
     window.showInformationMessage(`Definition at solc offset + length: ${defPosition}`);
