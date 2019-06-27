@@ -42,6 +42,10 @@ export function activate(context: ExtensionContext) {
     getTypeDefinition();
   }));
 
+  context.subscriptions.push(commands.registerCommand("solidity.signatureHelp", () => {
+    getTypeDefinition();
+  }));
+
   // The server is implemented in node
   const serverModule = context.asAbsolutePath(
     path.join("server", "out", "server.js")

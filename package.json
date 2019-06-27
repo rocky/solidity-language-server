@@ -94,6 +94,10 @@
       {
         "command": "solidity.getTypeDefinition",
         "title": "Solidity: get type definition of selected region"
+      },
+      {
+        "command": "solidity.signatureHelp",
+        "title": "Solidity: request signature information for selected region"
       }
     ],
     "snippets": [

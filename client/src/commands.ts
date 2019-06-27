@@ -90,7 +90,7 @@ export function gotoDefinition() {
     const pos = new Position(defRange.start.line - 1, defRange.start.character - 1);
     editor.selection = new Selection(pos, pos);
   } else {
-    window.showInformationMessage(`No definition found for ${range.start.line} char ${range.start.character} to line ${range.end.line} char ${range.end.character}`)
+    window.showInformationMessage(`No definition found for ${range.start.line} char ${range.start.character} to line ${range.end.line} char ${range.end.character}`);
   }
 }
 
@@ -116,3 +116,10 @@ export function getTypeDefinition() {
     window.showInformationMessage(mess);
   }
 }
+
+/* For now, we will say a signature is just the same as getting the
+   type definition. To distingush between the two, use the returned
+   node's "referencedDeclaration" attribute and check that its
+   nodeType is "EventDefintion" or "FunctionDefinition".
+*/
+export const signatureHelp = getTypeDefinition;
