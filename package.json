@@ -94,6 +94,10 @@
       {
         "command": "solidity.getTypeDefinition",
         "title": "Solidity: get type definition of selected region"
+      },
+      {
+        "command": "solidity.signatureHelp",
+        "title": "Solidity: request signature information for selected region"
       }
     ],
     "snippets": [
@@ -117,6 +121,9 @@
     "watch": "tsc --build --watch",
     "postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
     "test": "tsc -p ./ && mocha out/test"
+  },
+  "dependencies": {
+    "solc-lsp": "file:../solc-lsp"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.0",

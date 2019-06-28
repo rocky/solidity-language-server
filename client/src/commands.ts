@@ -5,12 +5,15 @@ import {
   DiagnosticCollection,
   Range,
   Selection,
+  Position,
   Uri
 } from "vscode";
-import * as solcLsp from "solc-lsp";
+
+import { LspManager } from "solc-lsp";
 import { solcErrToDiagnostic } from "./diagnostics";
 
-const lspMgr = new solcLsp.LspManager();
+const lspConfig = {};
+const lspMgr = new LspManager(lspConfig);
 
 function selectionToRange(selection: Selection): Range {
   // FIXME put into a function
@@ -72,13 +75,23 @@ export function gotoDefinition() {
     return;
   }
 
-  const lineBreakOffsets = lspMgr.fileInfo[fileName].sourceMapping.lineBreaks;
+  const sm = lspMgr.fileInfo[fileName].sourceMapping;
   const range = selectionToRange(editor.selection);
-  const srcPosition = solcLsp.rangeToLspPosition(range, lineBreakOffsets);
-  const defNode = lspMgr.gotoDefinition(fileName, srcPosition);
+  const defNode = lspMgr.gotoDefinition(fileName, range);
   if (defNode) {
     const defPosition = defNode.src;
-    window.showInformationMessage(`Definition at ${defPosition}`);
+    const defRange = sm.lineColumnRangeFromSrc(defPosition);
+
+    // Debug information.
+    window.showInformationMessage(`Definition at solc offset + length: ${defPosition}`);
+    window.showInformationMessage(`Definition starts at line ${defRange.start.line} char ${defRange.start.character} to line ${defRange.end.line} char ${defRange.end.character}`);
+
+    /* Update editor position.
+       Selections are 0-based, even though the editor reports 1-based. */
+    const pos = new Position(defRange.start.line - 1, defRange.start.character - 1);
+    editor.selection = new Selection(pos, pos);
+  } else {
+    window.showInformationMessage(`No definition found for ${range.start.line} char ${range.start.character} to line ${range.end.line} char ${range.end.character}`);
   }
 }
 
@@ -94,10 +107,8 @@ export function getTypeDefinition() {
     return;
   }
 
-  const lineBreakOffsets = lspMgr.fileInfo[fileName].sourceMapping.lineBreaks;
   const range = selectionToRange(editor.selection);
-  const srcPosition = solcLsp.rangeToLspPosition(range, lineBreakOffsets);
-  const selectedNode = lspMgr.gotoTypeDefinition(fileName, srcPosition);
+  const selectedNode = lspMgr.gotoTypeDefinition(fileName, range);
   if (selectedNode) {
     const typeName = selectedNode.typeDescriptions.typeString;
     const mess = "name" in selectedNode ?
@@ -106,3 +117,10 @@ export function getTypeDefinition() {
     window.showInformationMessage(mess);
   }
 }
+
+/* For now, we will say a signature is just the same as getting the
+   type definition. To distingush between the two, use the returned
+   node's "referencedDeclaration" attribute and check that its
+   nodeType is "EventDefintion" or "FunctionDefinition".
+*/
+export const signatureHelp = getTypeDefinition;
