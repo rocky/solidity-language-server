@@ -2,7 +2,7 @@
 {
     "version": "0.2.0",
     "configurations": [
-    
+
         {
             "type": "extensionHost",
             "request": "launch",
@@ -12,7 +12,7 @@
             "outFiles": [ "${workspaceRoot}/out/src/**/*.js" ],
             "stopOnEntry": false,
             "sourceMaps": true,
-            "preLaunchTask": "npm"
+            // "preLaunchTask": "tsc-watch"
         },
         {
             "type": "node",
@@ -31,7 +31,7 @@
             "stopOnEntry": false,
             "sourceMaps": true,
             "outFiles": [ "${workspaceRoot}/out/test/server/**/*.js" ],
-            "preLaunchTask": "npm"
+            // "preLaunchTask": "tsc-watch"
         }
         ],
         "compounds": [
