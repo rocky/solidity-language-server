@@ -12,9 +12,6 @@ import {
 import { LspManager } from "solc-lsp";
 import { solcErrToDiagnostic } from "./diagnostics";
 
-const lspConfig = {};
-const lspMgr = new LspManager(lspConfig);
-
 function selectionToRange(selection: Selection): Range {
   // FIXME put into a function
   return new Range(
@@ -26,7 +23,7 @@ function selectionToRange(selection: Selection): Range {
 }
 
 
-export function compileActiveContract(diagnosticCollection: DiagnosticCollection) {
+export function compileActiveContract(diagnosticCollection: DiagnosticCollection, lspMgr: LspManager) {
 
   const editor = window.activeTextEditor;
   if (!editor) {
@@ -63,7 +60,7 @@ export function compileActiveContract(diagnosticCollection: DiagnosticCollection
 
 }
 
-export function gotoDefinition() {
+export function gotoDefinition(lspMgr: LspManager) {
   const editor = window.activeTextEditor;
   if (!editor) {
     return; // We need something open
@@ -95,7 +92,7 @@ export function gotoDefinition() {
   }
 }
 
-export function getTypeDefinition() {
+export function getTypeDefinition(lspMgr: LspManager) {
   const editor = window.activeTextEditor;
   if (!editor) {
     return; // We need something open
