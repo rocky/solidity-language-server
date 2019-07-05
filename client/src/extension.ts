@@ -16,7 +16,13 @@ import {
   TransportKind
 } from "vscode-languageclient";
 
+import { registerSolidityHover } from "./features/hover";
 import { compileActiveContract, gotoDefinition, getTypeDefinition } from "./commands";
+
+import { LspManager } from "solc-lsp";
+
+const lspConfig = {};
+const lspMgr = new LspManager(lspConfig);
 
 let client: LanguageClient;
 
@@ -31,19 +37,19 @@ export function activate(context: ExtensionContext) {
   /* FIXME: these are done on the client side but may eventually be done on the LSP server side
    */
   context.subscriptions.push(commands.registerCommand("solidity.compile", () => {
-    compileActiveContract(diagnosticsCollection);
+    compileActiveContract(diagnosticsCollection, lspMgr);
   }));
 
   context.subscriptions.push(commands.registerCommand("solidity.gotoDefinition", () => {
-    gotoDefinition();
+    gotoDefinition(lspMgr);
   }));
 
   context.subscriptions.push(commands.registerCommand("solidity.getTypeDefinition", () => {
-    getTypeDefinition();
+    getTypeDefinition(lspMgr);
   }));
 
   context.subscriptions.push(commands.registerCommand("solidity.signatureHelp", () => {
-    getTypeDefinition();
+    getTypeDefinition(lspMgr);
   }));
 
   // The server is implemented in node
@@ -87,6 +93,9 @@ export function activate(context: ExtensionContext) {
     "Solidity Language Server",
     serverOptions,
     clientOptions);
+
+  registerSolidityHover(lspMgr);
+
 
   // Start the client. This will also launch the server
   client.start();

@@ -2,6 +2,7 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es6",
+	"experimentalDecorators": true,   /* decorators on functions, e.g. for memoizing function get */
         "outDir": "out",
  	"rootDir": "src",
 	"lib": [
