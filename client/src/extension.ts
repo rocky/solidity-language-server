@@ -17,6 +17,7 @@ import {
 } from "vscode-languageclient";
 
 import { registerSolidityHover } from "./features/hover";
+import { registerDefinition } from "./features/definitions";
 import { compileActiveContract, gotoDefinition, getTypeDefinition } from "./commands";
 
 import { LspManager } from "solc-lsp";
@@ -95,6 +96,7 @@ export function activate(context: ExtensionContext) {
     clientOptions);
 
   registerSolidityHover(lspMgr);
+  registerDefinition(lspMgr);
 
 
   // Start the client. This will also launch the server

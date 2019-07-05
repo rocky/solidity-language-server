@@ -3,12 +3,14 @@
 import * as vscode from "vscode";
 import { LspManager } from "solc-lsp";
 export function registerSolidityHover(lspMgr: LspManager) {
-  vscode.languages.registerHoverProvider("solidity",
+  vscode.languages.registerHoverProvider(
+    { scheme: "file", language: "solidity"},
     {
       provideHover(document: vscode.TextDocument, position: vscode.Position,
-        token: vscode.CancellationToken) {
-        if (document.uri.fsPath in lspMgr.fileInfo) {
-          const info = lspMgr.fileInfo[document.uri.fsPath];
+                   token: vscode.CancellationToken) {
+        const filepath = document.uri.fsPath;
+        if (filepath in lspMgr.fileInfo) {
+          const info = lspMgr.fileInfo[filepath];
           const staticInfo = info.staticInfo;
           const solcOffset = info.sourceMapping.offsetFromLineColPosition(position);
           const node = staticInfo.offsetToAstNode(solcOffset);
