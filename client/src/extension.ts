@@ -18,7 +18,7 @@ import {
 
 import { registerSolidityHover } from "./features/hover";
 import { registerDefinition } from "./features/definitions";
-import { registerTypeDefinition } from "./features/typedefinition";
+import { registerTypeDefinition } from "./features/type-definition";
 import { compileActiveContract, gotoDefinition, getTypeDefinition } from "./commands";
 
 import { LspManager } from "solc-lsp";
