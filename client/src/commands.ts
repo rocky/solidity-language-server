@@ -3,24 +3,23 @@ import {
   window, /*workspace,*/
   Diagnostic,
   DiagnosticCollection,
-  Range,
-  Selection,
-  Position,
+  // Range,
+  // Selection,
   Uri
 } from "vscode";
 
 import { LspManager } from "solc-lsp";
 import { solcErrToDiagnostic } from "./diagnostics";
 
-function selectionToRange(selection: Selection): Range {
-  // FIXME put into a function
-  return new Range(
-    selection.start.line + 1,
-    selection.start.character,
-    selection.end.line + 1,
-    selection.end.character
-  );
-}
+// // FIXME put into a function
+// function selectionToRange(selection: Selection): Range {
+//   return new Range(
+//     selection.start.line + 1,
+//     selection.start.character,
+//     selection.end.line + 1,
+//     selection.end.character
+//   );
+// }
 
 
 export function compileActiveContract(diagnosticCollection: DiagnosticCollection, lspMgr: LspManager) {
@@ -59,65 +58,3 @@ export function compileActiveContract(diagnosticCollection: DiagnosticCollection
   return;
 
 }
-
-export function gotoDefinition(lspMgr: LspManager) {
-  const editor = window.activeTextEditor;
-  if (!editor) {
-    return; // We need something open
-  }
-
-  const fileName = editor.document.fileName;
-  if (path.extname(fileName) !== ".sol") {
-    window.showWarningMessage(`${fileName} not a solidity file (*.sol)`);
-    return;
-  }
-
-  const sm = lspMgr.fileInfo[fileName].sourceMapping;
-  const range = selectionToRange(editor.selection);
-  const defNode = lspMgr.gotoDefinition(fileName, range);
-  if (defNode) {
-    const defPosition = defNode.src;
-    const defRange = sm.lineColumnRangeFromSrc(defPosition);
-
-    // Debug information.
-    window.showInformationMessage(`Definition at solc offset + length: ${defPosition}`);
-    window.showInformationMessage(`Definition starts at line ${defRange.start.line} char ${defRange.start.character} to line ${defRange.end.line} char ${defRange.end.character}`);
-
-    /* Update editor position.
-       Selections are 0-based, even though the editor reports 1-based. */
-    const pos = new Position(defRange.start.line - 1, defRange.start.character - 1);
-    editor.selection = new Selection(pos, pos);
-  } else {
-    window.showInformationMessage(`No definition found for ${range.start.line} char ${range.start.character} to line ${range.end.line} char ${range.end.character}`);
-  }
-}
-
-export function getTypeDefinition(lspMgr: LspManager) {
-  const editor = window.activeTextEditor;
-  if (!editor) {
-    return; // We need something open
-  }
-
-  const fileName = editor.document.fileName;
-  if (path.extname(fileName) !== ".sol") {
-    window.showWarningMessage(`${fileName} not a solidity file (*.sol)`);
-    return;
-  }
-
-  const range = selectionToRange(editor.selection);
-  const selectedNode = lspMgr.gotoTypeDefinition(fileName, range);
-  if (selectedNode) {
-    const typeName = selectedNode.typeDescriptions.typeString;
-    const mess = "name" in selectedNode ?
-      `${selectedNode.name} has type: ${typeName}` :
-      ` type: ${typeName}`;
-    window.showInformationMessage(mess);
-  }
-}
-
-/* For now, we will say a signature is just the same as getting the
-   type definition. To distingush between the two, use the returned
-   node's "referencedDeclaration" attribute and check that its
-   nodeType is "EventDefintion" or "FunctionDefinition".
-*/
-export const signatureHelp = getTypeDefinition;

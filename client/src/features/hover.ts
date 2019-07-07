@@ -18,11 +18,11 @@ export function registerSolidityHover(lspMgr: LspManager) {
           if (node) {
             token;
             if (node.typeName && node.typeName.name) {
-              mess = `${node.nodeType}; type: ${node.typeName.name}`;
+              mess = `<${node.nodeType}>, type: ${node.typeName.name}`;
             } else if (node.typeDescriptions && node.typeDescriptions.typeString) {
-              mess = `${node.nodeType}; type description: ${node.typeDescriptions.typeString}`;
+              mess = `<${node.nodeType}>; type description: ${node.typeDescriptions.typeString}`;
             } else {
-              mess = `${node.nodeType}`;
+              mess = `<${node.nodeType}>`;
               // console.log(util.inspect(node));
             }
             return new vscode.Hover(mess);

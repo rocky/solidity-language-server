@@ -20,7 +20,7 @@ import { registerSolidityHover } from "./features/hover";
 import { registerDefinition } from "./features/definitions";
 import { registerTypeDefinition } from "./features/type-definition";
 import { registerReferences } from "./features/references";
-import { compileActiveContract, gotoDefinition, getTypeDefinition } from "./commands";
+import { compileActiveContract } from "./commands";
 
 import { LspManager } from "solc-lsp";
 
@@ -43,17 +43,6 @@ export function activate(context: ExtensionContext) {
     compileActiveContract(diagnosticsCollection, lspMgr);
   }));
 
-  context.subscriptions.push(commands.registerCommand("solidity.gotoDefinition", () => {
-    gotoDefinition(lspMgr);
-  }));
-
-  context.subscriptions.push(commands.registerCommand("solidity.getTypeDefinition", () => {
-    getTypeDefinition(lspMgr);
-  }));
-
-  context.subscriptions.push(commands.registerCommand("solidity.signatureHelp", () => {
-    getTypeDefinition(lspMgr);
-  }));
 
   // The server is implemented in node
   const serverModule = context.asAbsolutePath(

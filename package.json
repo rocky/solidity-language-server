@@ -86,18 +86,6 @@
       {
         "command": "solidity.compile",
         "title": "Solidity: Compile Contract"
-      },
-      {
-        "command": "solidity.gotoDefinition",
-        "title": "Solidity: goto definition of selected region"
-      },
-      {
-        "command": "solidity.getTypeDefinition",
-        "title": "Solidity: get type definition of selected region"
-      },
-      {
-        "command": "solidity.signatureHelp",
-        "title": "Solidity: request signature information for selected region"
       }
     ],
     "snippets": [

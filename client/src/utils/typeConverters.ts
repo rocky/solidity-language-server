@@ -9,7 +9,6 @@
 
 import * as vscode from "vscode";
 import * as Proto from "../protocol";
-import { ISolidityServiceClient } from "../solidityService";
 
 export namespace Range {
   export const fromTextSpan = (span: Proto.TextSpan): vscode.Range =>
@@ -60,30 +59,4 @@ export namespace TextEdit {
     new vscode.TextEdit(
       Range.fromTextSpan(edit),
       edit.newText);
-}
-
-export namespace WorkspaceEdit {
-  export function fromFileCodeEdits(
-    client: ISolidityServiceClient,
-    edits: Iterable<Proto.FileCodeEdits>
-  ): vscode.WorkspaceEdit {
-    return withFileCodeEdits(new vscode.WorkspaceEdit(), client, edits);
-  }
-
-  export function withFileCodeEdits(
-    workspaceEdit: vscode.WorkspaceEdit,
-    client: ISolidityServiceClient,
-    edits: Iterable<Proto.FileCodeEdits>
-  ): vscode.WorkspaceEdit {
-    for (const edit of edits) {
-      const resource = client.toResource(edit.fileName);
-      for (const textChange of edit.textChanges) {
-        workspaceEdit.replace(resource,
-          Range.fromTextSpan(textChange),
-          textChange.newText);
-      }
-    }
-
-    return workspaceEdit;
-  }
 }
