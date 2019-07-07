@@ -14,7 +14,7 @@ export function registerTypeDefinition(lspMgr: LspManager) {
         const finfo = tup[0];
         const queryNode = tup[1];
         const defNode = getTypeDefinitionNodeFromSolcNode(finfo.staticInfo, queryNode);
-        if (!defNode) return [];
+        if (defNode === null) return [];
         const originSelectionRange = finfo.sourceMapping.lineColRangeFromSrc(queryNode.src,
           0, 0);
         const targetRange = finfo.sourceMapping.lineColRangeFromSrc(defNode.src, 0, 0);

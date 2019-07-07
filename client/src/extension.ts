@@ -19,6 +19,7 @@ import {
 import { registerSolidityHover } from "./features/hover";
 import { registerDefinition } from "./features/definitions";
 import { registerTypeDefinition } from "./features/type-definition";
+import { registerReferences } from "./features/references";
 import { compileActiveContract, gotoDefinition, getTypeDefinition } from "./commands";
 
 import { LspManager } from "solc-lsp";
@@ -99,6 +100,7 @@ export function activate(context: ExtensionContext) {
   registerSolidityHover(lspMgr);
   registerDefinition(lspMgr);
   registerTypeDefinition(lspMgr);
+  registerReferences(lspMgr);
 
 
   // Start the client. This will also launch the server
