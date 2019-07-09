@@ -88,6 +88,20 @@
         "title": "Solidity: Compile Contract"
       }
     ],
+    "keybindings": [
+      {
+        "command": "solidity.compile",
+        "key": "f5",
+        "mac": "f5",
+        "when": "editorTextFocus && editorLangId == 'solidity'"
+      },
+      {
+        "command": "solidity.compile",
+        "key": "Ctrl+f5",
+        "mac": "Cmd+f5",
+        "when": "editorTextFocus && editorLangId == 'solidity'"
+      }
+    ],
     "snippets": [
       {
         "language": "solidity",

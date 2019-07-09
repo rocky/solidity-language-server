@@ -24,7 +24,7 @@ export function registerReferences(lspMgr: LspManager) {
         const useNodes = getReferencesFromSolcNode(finfo.staticInfo, queryNode);
         if (useNodes === null || useNodes.length === 0) return [];
         const locations: Array<vscode.Location> = [];
-        for (const node of useNodes) {
+      for (const node of useNodes) {
           const lcRange = finfo.sourceMapping.lineColRangeFromSrc(node.src, 0, 0);
           const range = new vscode.Range(lcRange.start.line, lcRange.start.character,
             lcRange.end.line, lcRange.end.character);

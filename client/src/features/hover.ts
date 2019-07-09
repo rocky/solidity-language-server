@@ -13,7 +13,7 @@ export function registerSolidityHover(lspMgr: LspManager) {
           const info = lspMgr.fileInfo[filepath];
           const staticInfo = info.staticInfo;
           const solcOffset = info.sourceMapping.offsetFromLineColPosition(position);
-          const node = staticInfo.offsetToAstNode(solcOffset);
+        const node = staticInfo.offsetToAstNode(solcOffset);
           let mess: string;
           if (node) {
             token;

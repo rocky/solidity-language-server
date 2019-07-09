@@ -13,7 +13,7 @@
 	},
 	"scripts": {
 		"update-vscode": "vscode-install",
-		"postinstall": "vscode-install"
+		"postinstall": "bash ./post-install.sh"
 	},
 	"dependencies": {
 		"solc-lsp": "file:../../solc-lsp",
