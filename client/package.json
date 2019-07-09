@@ -17,7 +17,6 @@
 	},
 	"dependencies": {
 		"solc-lsp": "file:../../solc-lsp",
-		"solc": "^0.5.10",
 		"vscode-languageclient": "^4.1.4"
 	},
 	"devDependencies": {
