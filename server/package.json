@@ -11,8 +11,8 @@
       "type": "git",
       "url": "https://github.com/rocky/solidity-language-server"
    },
+   "scripts": {},
    "dependencies": {
-      "vscode-languageserver": "^4.1.3"
-   },
-   "scripts": {}
+      "vscode-languageserver": "^5.2.1"
+   }
 }

@@ -19,7 +19,7 @@
     "compiler"
   ],
   "engines": {
-    "vscode": "^1.26.0"
+    "vscode": "^1.36.0"
   },
   "activationEvents": [
     "onLanguage:solidity",
@@ -125,7 +125,8 @@
     "test": "tsc -p ./ && mocha out/test"
   },
   "dependencies": {
-    "solc-lsp": "file:../solc-lsp"
+    "solc-lsp": "file:../solc-lsp",
+    "vscode-languageclient": "^5.2.1"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.0",
